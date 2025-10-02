@@ -1,0 +1,80 @@
+{% extends 'events/base.html' %}
+
+{% block title %}{{ event.name }} - Event Booking System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ event.name }}</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Event Details</h5>
+                    <p class="card-text">{{ event.description }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Date:</strong> {{ event.date|date:"F j, Y, g:i a" }}</li>
+                        <li class="list-group-item"><strong>Available Seats:</strong> {{ event.seats_available }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Book This Event</h5>
+                </div>
+                <div class="card-body">
+                    {% if event.seats_available > 0 %}
+                        <form method="post" action="{% url 'book_event' event.id %}">
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.user_name.id_for_label }}" class="form-label">Your Name</label>
+                                {{ form.user_name }}
+                                {% if form.user_name.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.user_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.user_email.id_for_label }}" class="form-label">Your Email</label>
+                                {{ form.user_email }}
+                                {% if form.user_email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.user_email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>Sorry, this event is fully booked.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Events</a>
+    </div>
+</div>
+{% endblock %}
