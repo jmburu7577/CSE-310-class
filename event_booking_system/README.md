@@ -60,13 +60,11 @@ The application demonstrates core web development concepts including:
    python manage.py runserver
    ```
 
-7. Access the application at: http://127.0.0.1:8000/
-
 ## Usage Instructions
 
 ### Admin Interface
 
-1. Access the admin interface at: http://127.0.0.1:8000/admin/
+1. Access the admin interface 
 2. Log in with the superuser credentials created during setup
 3. Add, edit, or delete events through the admin interface
 
