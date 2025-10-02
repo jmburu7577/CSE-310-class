@@ -1,6 +1,6 @@
 # Event Booking System
 
-A Django-based web application for managing event bookings. This project was developed as part of the CSE-310 Web Apps Module assignment.
+A Django-based web application for managing event bookings.
 
 ## Project Description
 
@@ -84,10 +84,6 @@ The application demonstrates core web development concepts including:
 - `events/views.py`: Contains the views for the home page, event detail, and booking confirmation
 - `events/templates/`: Contains the HTML templates for the application
 - `events/urls.py`: Contains the URL patterns for the application
-
-## Demo Video
-
-[Link to Demo Video](https://example.com/demo-video) (Placeholder for demo video link)
 
 ## Technologies Used
 
