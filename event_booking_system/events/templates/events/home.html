@@ -11,7 +11,32 @@
 </div>
 
 <div class="container">
-    <h2 class="mb-4">Upcoming Events</h2>
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form method="get" action="{% url 'home' %}" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" 
+                       placeholder="Search events by name or description" 
+                       value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+                {% if search_query %}
+                <a href="{% url 'home' %}" class="btn btn-secondary ms-2">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
+    <!-- Results Summary -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            {% if search_query %}
+                Search Results for "{{ search_query }}"
+            {% else %}
+                Upcoming Events
+            {% endif %}
+        </h2>
+        <span class="badge bg-primary fs-6">{{ total_events }} event{{ total_events|pluralize }}</span>
+    </div>
     
     {% if events %}
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -24,10 +49,19 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>Date:</strong> {{ event.date|date:"F j, Y, g:i a" }}</li>
-                    <li class="list-group-item"><strong>Available Seats:</strong> {{ event.seats_available }}</li>
+                    <li class="list-group-item">
+                        <strong>Available Seats:</strong> 
+                        <span class="badge {% if event.seats_available == 0 %}bg-danger{% elif event.seats_available < 10 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                            {{ event.seats_available }}
+                        </span>
+                    </li>
                 </ul>
                 <div class="card-footer bg-transparent">
-                    <a href="{% url 'event_detail' event.id %}" class="btn btn-primary">View Details</a>
+                    {% if event.seats_available > 0 %}
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-primary w-100">View Details & Book</a>
+                    {% else %}
+                        <button class="btn btn-secondary w-100" disabled>Fully Booked</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -35,7 +69,11 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <p>No upcoming events at the moment. Please check back later!</p>
+        {% if search_query %}
+            <p>No events found matching "{{ search_query }}". Try a different search term.</p>
+        {% else %}
+            <p>No upcoming events at the moment. Please check back later!</p>
+        {% endif %}
     </div>
     {% endif %}
 </div>
