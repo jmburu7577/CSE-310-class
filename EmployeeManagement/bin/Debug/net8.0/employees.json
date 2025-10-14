@@ -1,0 +1,16 @@
+[
+  {
+    "Id": 330294,
+    "Department": "it",
+    "Salary": 150000,
+    "Address": {
+      "Street": "21m",
+      "City": "nairobi",
+      "State": "nairobi",
+      "Zip": "00200"
+    },
+    "FirstName": "james mburu maina",
+    "LastName": "maina",
+    "Age": 20
+  }
+]
