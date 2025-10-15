@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "CJq7pnor8ec=",
+  "dgSpecHash": "vfON264cM4c=",
   "success": true,
-  "projectFilePath": "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\EmployeeManagement.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\BYU\\.nuget\\packages\\spectre.console\\0.47.0\\spectre.console.0.47.0.nupkg.sha512",
+    "C:\\Users\\BYU\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\BYU\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.20\\microsoft.netcore.app.ref.8.0.20.nupkg.sha512",
+    "C:\\Users\\BYU\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.20\\microsoft.windowsdesktop.app.ref.8.0.20.nupkg.sha512",
+    "C:\\Users\\BYU\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.20\\microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512",
+    "C:\\Users\\BYU\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.20\\microsoft.netcore.app.host.win-x64.8.0.20.nupkg.sha512"
+  ],
   "logs": []
 }

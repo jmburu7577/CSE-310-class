@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\EmployeeManagement.csproj": {}
+    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\EmployeeManagement.csproj": {
+    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\EmployeeManagement.csproj",
+        "projectUniqueName": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
         "projectName": "EmployeeManagement",
-        "projectPath": "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\EmployeeManagement.csproj",
-        "packagesPath": "C:\\Users\\jemo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jemo\\Projects\\CSE-310-class\\EmployeeManagement\\obj\\",
+        "projectPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
+        "packagesPath": "C:\\Users\\BYU\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\jemo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\BYU\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,11 +37,18 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Spectre.Console": {
+              "target": "Package",
+              "version": "[0.47.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -53,12 +60,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.20, 8.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.20, 8.0.20]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.20, 8.0.20]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.20, 8.0.20]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

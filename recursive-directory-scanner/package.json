@@ -1,0 +1,36 @@
+{
+  "name": "recursive-directory-scanner",
+  "version": "1.0.0",
+  "description": "A TypeScript application that recursively scans directories and displays file structure",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "typescript",
+    "directory",
+    "scanner",
+    "recursive",
+    "file-system"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2",
+    "rimraf": "^5.0.5",
+    "@types/jest": "^29.5.10",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1"
+  },
+  "dependencies": {}
+}

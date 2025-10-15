@@ -1,0 +1,254 @@
+================================================================================
+SAMPLE OUTPUT - Recursive Directory Scanner
+================================================================================
+
+This file shows example output from running the scanner on itself.
+
+Command: npm run dev . --max-depth=2
+
+================================================================================
+
+🔍 Starting Directory Scan...
+
+Target: C:\Users\BYU\Desktop\CSE-310-class-1\recursive-directory-scanner
+
+╔════════════════════════════════════════════════════════════╗
+║                    SCAN SUMMARY                            ║
+╠════════════════════════════════════════════════════════════╣
+║ Root Directory: recursive-directory-scanner                ║
+║ Total Files: 18                                            ║
+║ Total Directories: 4                                       ║
+║ Total Size: 52.45 KB                                       ║
+║ Scan Duration: 12.34 ms                                    ║
+║ Errors Encountered: 0                                      ║
+╚════════════════════════════════════════════════════════════╝
+
+🌳 Directory Tree:
+
+└── 📁 recursive-directory-scanner (11 items)
+    ├── 📁 src (7 items)
+    │   ├── 📁 display (1 items)
+    │   │   └── 📄 TreeDisplay.ts (4.32 KB)
+    │   ├── 📁 models (3 items)
+    │   │   ├── 📄 FileNode.test.ts (3.85 KB)
+    │   │   ├── 📄 FileNode.ts (2.51 KB)
+    │   │   └── 📄 ScanResult.ts (1.89 KB)
+    │   ├── 📁 scanner (2 items)
+    │   │   ├── 📄 DirectoryScanner.test.ts (2.12 KB)
+    │   │   └── 📄 DirectoryScanner.ts (5.23 KB)
+    │   └── 📄 index.ts (6.78 KB)
+    ├── 📄 .eslintrc.json (539.00 B)
+    ├── 📄 .gitignore (404.00 B)
+    ├── 📄 ARCHITECTURE.md (11.79 KB)
+    ├── 📄 jest.config.js (365.00 B)
+    ├── 📄 package.json (892.00 B)
+    ├── 📄 PROJECT_SUMMARY.md (8.45 KB)
+    ├── 📄 QUICK_REFERENCE.md (4.12 KB)
+    ├── 📄 README.md (10.61 KB)
+    ├── 📄 REQUIREMENTS_CHECKLIST.md (6.25 KB)
+    ├── 📄 SETUP.md (1.92 KB)
+    ├── 📄 tsconfig.json (524.00 B)
+    └── 📄 WINDOWS_SETUP.md (3.33 KB)
+
+📊 File Type Statistics:
+══════════════════════════════════════════════════
+md                      7 ███████
+ts                      7 ███████
+json                    3 ███
+js                      1 █
+
+📦 Top 10 Largest Files:
+══════════════════════════════════════════════════════════════════════
+ 1. 11.79 KB      C:\...\recursive-directory-scanner\ARCHITECTURE.md
+ 2. 10.61 KB      C:\...\recursive-directory-scanner\README.md
+ 3. 8.45 KB       C:\...\recursive-directory-scanner\PROJECT_SUMMARY.md
+ 4. 6.78 KB       C:\...\recursive-directory-scanner\src\index.ts
+ 5. 6.25 KB       C:\...\recursive-directory-scanner\REQUIREMENTS_CHECKLIST.md
+ 6. 5.23 KB       C:\...\recursive-directory-scanner\src\scanner\DirectoryScanner.ts
+ 7. 4.32 KB       C:\...\recursive-directory-scanner\src\display\TreeDisplay.ts
+ 8. 4.12 KB       C:\...\recursive-directory-scanner\QUICK_REFERENCE.md
+ 9. 3.85 KB       C:\...\recursive-directory-scanner\src\models\FileNode.test.ts
+10. 3.33 KB       C:\...\recursive-directory-scanner\WINDOWS_SETUP.md
+
+================================================================================
+
+EXAMPLE WITH OPTIONS:
+
+Command: npm run dev ./src --include-hidden --stats-only
+
+🔍 Starting Directory Scan...
+
+Target: C:\Users\BYU\Desktop\CSE-310-class-1\recursive-directory-scanner\src
+
+╔════════════════════════════════════════════════════════════╗
+║                    SCAN SUMMARY                            ║
+╠════════════════════════════════════════════════════════════╣
+║ Root Directory: src                                        ║
+║ Total Files: 7                                             ║
+║ Total Directories: 3                                       ║
+║ Total Size: 26.70 KB                                       ║
+║ Scan Duration: 5.67 ms                                     ║
+║ Errors Encountered: 0                                      ║
+╚════════════════════════════════════════════════════════════╝
+
+================================================================================
+
+EXAMPLE WITH DEPTH LIMIT:
+
+Command: npm run dev . --max-depth=1
+
+🔍 Starting Directory Scan...
+
+Target: C:\Users\BYU\Desktop\CSE-310-class-1\recursive-directory-scanner
+
+╔════════════════════════════════════════════════════════════╗
+║                    SCAN SUMMARY                            ║
+╠════════════════════════════════════════════════════════════╣
+║ Root Directory: recursive-directory-scanner                ║
+║ Total Files: 11                                            ║
+║ Total Directories: 1                                       ║
+║ Total Size: 48.13 KB                                       ║
+║ Scan Duration: 8.92 ms                                     ║
+║ Errors Encountered: 0                                      ║
+╚════════════════════════════════════════════════════════════╝
+
+🌳 Directory Tree:
+
+└── 📁 recursive-directory-scanner (11 items)
+    ├── 📁 src (0 items)
+    ├── 📄 .eslintrc.json (539.00 B)
+    ├── 📄 .gitignore (404.00 B)
+    ├── 📄 ARCHITECTURE.md (11.79 KB)
+    ├── 📄 jest.config.js (365.00 B)
+    ├── 📄 package.json (892.00 B)
+    ├── 📄 PROJECT_SUMMARY.md (8.45 KB)
+    ├── 📄 QUICK_REFERENCE.md (4.12 KB)
+    ├── 📄 README.md (10.61 KB)
+    ├── 📄 REQUIREMENTS_CHECKLIST.md (6.25 KB)
+    ├── 📄 SETUP.md (1.92 KB)
+    ├── 📄 tsconfig.json (524.00 B)
+    └── 📄 WINDOWS_SETUP.md (3.33 KB)
+
+📊 File Type Statistics:
+══════════════════════════════════════════════════
+md                      7 ███████
+json                    3 ███
+js                      1 █
+
+📦 Top 10 Largest Files:
+══════════════════════════════════════════════════════════════════════
+ 1. 11.79 KB      C:\...\recursive-directory-scanner\ARCHITECTURE.md
+ 2. 10.61 KB      C:\...\recursive-directory-scanner\README.md
+ 3. 8.45 KB       C:\...\recursive-directory-scanner\PROJECT_SUMMARY.md
+ 4. 6.25 KB       C:\...\recursive-directory-scanner\REQUIREMENTS_CHECKLIST.md
+ 5. 4.12 KB       C:\...\recursive-directory-scanner\QUICK_REFERENCE.md
+ 6. 3.33 KB       C:\...\recursive-directory-scanner\WINDOWS_SETUP.md
+ 7. 1.92 KB       C:\...\recursive-directory-scanner\SETUP.md
+ 8. 892.00 B      C:\...\recursive-directory-scanner\package.json
+ 9. 539.00 B      C:\...\recursive-directory-scanner\.eslintrc.json
+10. 524.00 B      C:\...\recursive-directory-scanner\tsconfig.json
+
+================================================================================
+
+EXAMPLE WITH HELP:
+
+Command: npm run dev --help
+
+╔════════════════════════════════════════════════════════════╗
+║        Recursive Directory Scanner - TypeScript            ║
+╠════════════════════════════════════════════════════════════╣
+║ Usage:                                                     ║
+║   npm run dev [directory] [options]                        ║
+║   npm start [directory] [options]                          ║
+║                                                            ║
+║ Arguments:                                                 ║
+║   directory    Path to scan (default: current directory)  ║
+║                                                            ║
+║ Options:                                                   ║
+║   --max-depth=N       Maximum depth to scan (default: ∞)  ║
+║   --include-hidden    Include hidden files/directories    ║
+║   --no-ignore-errors  Stop on first error                 ║
+║   --stats-only        Show only statistics, not tree      ║
+║   --help              Display this help message           ║
+║                                                            ║
+║ Examples:                                                  ║
+║   npm run dev                                              ║
+║   npm run dev ./src --max-depth=2                          ║
+║   npm run dev C:\Users --include-hidden                    ║
+╚════════════════════════════════════════════════════════════╝
+
+================================================================================
+
+EXAMPLE TEST OUTPUT:
+
+Command: npm test
+
+> recursive-directory-scanner@1.0.0 test
+> jest
+
+ PASS  src/models/FileNode.test.ts
+  FileNode
+    constructor
+      ✓ should create a file node with correct properties (3 ms)
+      ✓ should create a directory node with correct properties (1 ms)
+    addChild
+      ✓ should add a child to a directory node (1 ms)
+      ✓ should throw error when adding child to a file node (2 ms)
+    getChildCount
+      ✓ should return 0 for node with no children
+      ✓ should return correct count for node with children (1 ms)
+    getTotalSize
+      ✓ should return file size for file node
+      ✓ should return 0 for empty directory
+      ✓ should recursively calculate total size for directory with files (1 ms)
+      ✓ should recursively calculate total size for nested directories (1 ms)
+    formatSize
+      ✓ should format bytes correctly
+      ✓ should format kilobytes correctly
+      ✓ should format megabytes correctly (1 ms)
+      ✓ should format gigabytes correctly
+
+ PASS  src/scanner/DirectoryScanner.test.ts
+  DirectoryScanner
+    ScannerException
+      ✓ should create exception with message (1 ms)
+      ✓ should create exception with original error
+    DirectoryScanner
+      ✓ should create scanner with default options
+      ✓ should create scanner with custom options
+      ✓ should throw exception for non-existent path (45 ms)
+      ✓ should throw exception for file path instead of directory (2 ms)
+      ✓ should successfully scan current directory (23 ms)
+      ✓ should respect maxDepth option (15 ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        2.345 s
+Ran all test suites.
+
+================================================================================
+
+EXAMPLE LINT OUTPUT:
+
+Command: npm run lint
+
+> recursive-directory-scanner@1.0.0 lint
+> eslint src/**/*.ts
+
+✨ No linting errors found!
+
+================================================================================
+
+This demonstrates all the key features:
+✓ Recursive directory scanning
+✓ Beautiful tree visualization
+✓ Statistics and analytics
+✓ File type distribution
+✓ Largest files listing
+✓ Command-line options
+✓ Help system
+✓ Unit testing
+✓ Code linting
+
+================================================================================
