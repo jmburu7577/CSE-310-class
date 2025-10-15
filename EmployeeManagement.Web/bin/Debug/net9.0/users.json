@@ -1,0 +1,41 @@
+[
+  {
+    "Id": 1,
+    "Username": "jemo",
+    "Email": "jamesmburu899@gmail.com",
+    "PasswordHash": "bIEqf+B1tAJwmGDv4MVNbx2RuxgCY7aIXKP+Vq1hEzs=",
+    "FullName": "james mburu maina",
+    "Role": 5,
+    "CreatedAt": "2025-10-14T11:30:45.3356703Z",
+    "LastLogin": "2025-10-14T12:03:33.4396927Z"
+  },
+  {
+    "Id": 2,
+    "Username": "testuser",
+    "Email": "test@example.com",
+    "PasswordHash": "7NcYcNGWMxapfjrDQIyYNa2M8PPBvHA1J8MCZVNPda4=",
+    "FullName": "Test User",
+    "Role": 5,
+    "CreatedAt": "2025-10-14T11:35:34.7650926Z",
+    "LastLogin": "2025-10-15T05:39:55.8445369Z"
+  },
+  {
+    "Id": 3,
+    "Username": "admin",
+    "Email": "jmm425@ensign.edu",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "FullName": "admin",
+    "Role": 5,
+    "CreatedAt": "2025-10-14T12:07:39.6052631Z",
+    "LastLogin": "2025-10-15T05:42:17.3365183Z"
+  },
+  {
+    "Id": 4,
+    "Username": "Mburu",
+    "Email": "mburu@example.com",
+    "PasswordHash": "CqpIUiIL03dpdD0u0GGugbTDp1RWFkBfnQ4e3Ia/uMs=",
+    "FullName": "Mburu",
+    "Role": 5,
+    "CreatedAt": "2025-10-15T06:10:00Z"
+  }
+]

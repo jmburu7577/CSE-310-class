@@ -1,0 +1,58 @@
+[
+  {
+    "Id": 2020203,
+    "FirstName": "john",
+    "LastName": "kamau",
+    "Age": 45,
+    "Department": "HR",
+    "Salary": 1234,
+    "Address": {
+      "Street": "2m",
+      "City": "nairobi",
+      "State": "nairobi",
+      "Zip": "00200"
+    }
+  },
+  {
+    "Id": 91233,
+    "FirstName": "john",
+    "LastName": "maina",
+    "Age": 123,
+    "Department": "Admin",
+    "Salary": 1236,
+    "Address": {
+      "Street": "k1",
+      "City": "nairobi",
+      "State": "upperhill",
+      "Zip": "00200"
+    }
+  },
+  {
+    "Id": 252525,
+    "FirstName": "Ann",
+    "LastName": "nyambura",
+    "Age": 45,
+    "Department": "Math",
+    "Salary": 1234,
+    "Address": {
+      "Street": "5",
+      "City": "nairobi",
+      "State": "upperhill",
+      "Zip": "00200"
+    }
+  },
+  {
+    "Id": 202002,
+    "FirstName": "Ann",
+    "LastName": "m",
+    "Age": 23,
+    "Department": "Admin",
+    "Salary": 1235,
+    "Address": {
+      "Street": "2m",
+      "City": "nairobi",
+      "State": "upperhill",
+      "Zip": "00200"
+    }
+  }
+]

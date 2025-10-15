@@ -1,0 +1,65 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║          EMPLOYEE MANAGEMENT SYSTEM - SIMPLE START GUIDE         ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📍 STEP 1: OPEN POWERSHELL
+   - Press Windows Key + X
+   - Click "Windows PowerShell" or "Terminal"
+
+📍 STEP 2: NAVIGATE TO PROJECT
+   Copy and paste this command:
+   
+   cd c:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web
+
+📍 STEP 3: START THE APPLICATION
+   Copy and paste this command:
+   
+   dotnet run
+
+📍 STEP 4: WAIT FOR STARTUP
+   You will see messages like:
+   - "Building..."
+   - "Now listening on: http://localhost:5000"
+   - "Application started"
+   
+   ⚠️ DO NOT CLOSE THIS WINDOW!
+
+📍 STEP 5: OPEN YOUR BROWSER
+   Open any browser and go to:
+   
+   http://localhost:5000
+
+📍 STEP 6: LOGIN
+   Use one of these admin accounts:
+   
+   Username: admin      Password: admin123
+   Username: jemo       Password: jemo123
+   Username: testuser   Password: test123
+
+═══════════════════════════════════════════════════════════════════
+
+🔧 TROUBLESHOOTING:
+
+Problem: "dotnet: command not found"
+Solution: Install .NET SDK from https://dotnet.microsoft.com/download
+
+Problem: Port 5000 already in use
+Solution: Run this first: Get-Process dotnet | Stop-Process -Force
+
+Problem: Browser shows "Can't reach this page"
+Solution: Make sure you see "Now listening on: http://localhost:5000" in PowerShell
+
+Problem: Blank page in browser
+Solution: Press Ctrl+Shift+R to hard refresh the page
+
+═══════════════════════════════════════════════════════════════════
+
+📝 QUICK REFERENCE:
+
+Application URL:  http://localhost:5000
+Admin Accounts:   admin/admin123, jemo/jemo123, testuser/test123
+Stop Application: Press Ctrl+C in PowerShell window
+
+═══════════════════════════════════════════════════════════════════
