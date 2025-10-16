@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vfON264cM4c=",
+  "dgSpecHash": "PYC8z+TNxVA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
+  "projectFilePath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\EmployeeManagement.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BYU\\.nuget\\packages\\spectre.console\\0.47.0\\spectre.console.0.47.0.nupkg.sha512",
     "C:\\Users\\BYU\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",

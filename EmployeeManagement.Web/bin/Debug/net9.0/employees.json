@@ -54,5 +54,19 @@
       "State": "upperhill",
       "Zip": "00200"
     }
+  },
+  {
+    "Id": 44,
+    "FirstName": "john",
+    "LastName": "nyambura",
+    "Age": 20,
+    "Department": "HR",
+    "Salary": 4566,
+    "Address": {
+      "Street": "5",
+      "City": "nairobi",
+      "State": "nairobi",
+      "Zip": "00200"
+    }
   }
 ]

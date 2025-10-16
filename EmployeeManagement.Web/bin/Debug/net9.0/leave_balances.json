@@ -1,0 +1,28 @@
+[
+  {
+    "EmployeeId": 2020203,
+    "Year": 2025,
+    "VacationDays": 20,
+    "SickDays": 10,
+    "PersonalDays": 5,
+    "VacationUsed": 3,
+    "SickUsed": 0,
+    "PersonalUsed": 0,
+    "VacationRemaining": 17,
+    "SickRemaining": 10,
+    "PersonalRemaining": 5
+  },
+  {
+    "EmployeeId": 91233,
+    "Year": 2025,
+    "VacationDays": 20,
+    "SickDays": 10,
+    "PersonalDays": 5,
+    "VacationUsed": 0,
+    "SickUsed": 0,
+    "PersonalUsed": 0,
+    "VacationRemaining": 20,
+    "SickRemaining": 10,
+    "PersonalRemaining": 5
+  }
+]

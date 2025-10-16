@@ -1,0 +1,44 @@
+[
+  {
+    "Id": 1,
+    "EmployeeId": 2020203,
+    "PayPeriodStart": "2025-10-01T00:00:00",
+    "PayPeriodEnd": "2025-10-31T00:00:00",
+    "GrossSalary": 102.83333333333333333333333333,
+    "Tax": 20.566666666666666666666666666,
+    "Deductions": 50,
+    "Bonuses": 500,
+    "NetSalary": 532.26666666666666666666666666,
+    "GeneratedDate": "2025-10-16T11:44:36.4550165Z",
+    "Notes": "Monthly salary \u002B performance bonus",
+    "Status": 3
+  },
+  {
+    "Id": 2,
+    "EmployeeId": 202002,
+    "PayPeriodStart": "2025-08-31T00:00:00",
+    "PayPeriodEnd": "2025-09-29T00:00:00",
+    "GrossSalary": 102.91666666666666666666666667,
+    "Tax": 20.583333333333333333333333334,
+    "Deductions": 120,
+    "Bonuses": 250,
+    "NetSalary": 212.33333333333333333333333334,
+    "GeneratedDate": "2025-10-16T12:04:31.411138Z",
+    "Notes": "",
+    "Status": 1
+  },
+  {
+    "Id": 3,
+    "EmployeeId": 44,
+    "PayPeriodStart": "2025-09-30T00:00:00",
+    "PayPeriodEnd": "2025-10-30T00:00:00",
+    "GrossSalary": 380.5,
+    "Tax": 76.100,
+    "Deductions": 0,
+    "Bonuses": 0,
+    "NetSalary": 304.400,
+    "GeneratedDate": "2025-10-16T12:39:15.7828781Z",
+    "Notes": "",
+    "Status": 3
+  }
+]

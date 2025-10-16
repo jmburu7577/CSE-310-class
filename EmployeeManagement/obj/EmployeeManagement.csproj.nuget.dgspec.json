@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj": {}
+    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\EmployeeManagement.csproj": {}
   },
   "projects": {
-    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj": {
+    "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\EmployeeManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
+        "projectUniqueName": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\EmployeeManagement.csproj",
         "projectName": "EmployeeManagement",
-        "projectPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\EmployeeManagement.csproj",
+        "projectPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\EmployeeManagement.csproj",
         "packagesPath": "C:\\Users\\BYU\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\employeemanagement\\obj\\",
+        "outputPath": "C:\\Users\\BYU\\Desktop\\CSE-310-class-1\\EmployeeManagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\BYU\\AppData\\Roaming\\NuGet\\NuGet.Config"

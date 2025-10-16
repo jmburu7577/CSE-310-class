@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "EmployeeId": 2020203,
+    "Type": 1,
+    "StartDate": "2025-11-01T00:00:00",
+    "EndDate": "2025-11-05T00:00:00",
+    "Days": 3,
+    "Reason": "Family vacation to the beach",
+    "Status": 2,
+    "ApprovedBy": 3,
+    "ApprovedDate": "2025-10-16T11:45:48.416547Z",
+    "ApproverNotes": "Approved! Have a great vacation!",
+    "RequestedDate": "2025-10-16T11:45:29.7522457Z"
+  },
+  {
+    "Id": 2,
+    "EmployeeId": 91233,
+    "Type": 5,
+    "StartDate": "2025-10-29T00:00:00",
+    "EndDate": "2025-11-08T00:00:00",
+    "Days": 8,
+    "Reason": "welcoming my new born",
+    "Status": 2,
+    "ApprovedBy": 3,
+    "ApprovedDate": "2025-10-16T12:23:05.6209164Z",
+    "ApproverNotes": "",
+    "RequestedDate": "2025-10-16T12:22:25.3183316Z"
+  }
+]

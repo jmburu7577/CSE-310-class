@@ -3,11 +3,11 @@
     "Id": 1,
     "Username": "jemo",
     "Email": "jamesmburu899@gmail.com",
-    "PasswordHash": "bIEqf+B1tAJwmGDv4MVNbx2RuxgCY7aIXKP+Vq1hEzs=",
+    "PasswordHash": "bIEqf\u002BB1tAJwmGDv4MVNbx2RuxgCY7aIXKP\u002BVq1hEzs=",
     "FullName": "james mburu maina",
-    "Role": 5,
+    "Role": 4,
     "CreatedAt": "2025-10-14T11:30:45.3356703Z",
-    "LastLogin": "2025-10-14T12:03:33.4396927Z"
+    "LastLogin": "2025-10-16T10:18:25.8025857Z"
   },
   {
     "Id": 2,
@@ -23,11 +23,11 @@
     "Id": 3,
     "Username": "admin",
     "Email": "jmm425@ensign.edu",
-    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1\u002BgxwIyPqCKAn3THIKk=",
     "FullName": "admin",
     "Role": 5,
     "CreatedAt": "2025-10-14T12:07:39.6052631Z",
-    "LastLogin": "2025-10-15T05:42:17.3365183Z"
+    "LastLogin": "2025-10-16T12:23:55.6088007Z"
   },
   {
     "Id": 4,
@@ -36,6 +36,27 @@
     "PasswordHash": "CqpIUiIL03dpdD0u0GGugbTDp1RWFkBfnQ4e3Ia/uMs=",
     "FullName": "Mburu",
     "Role": 5,
-    "CreatedAt": "2025-10-15T06:10:00Z"
+    "CreatedAt": "2025-10-15T06:10:00Z",
+    "LastLogin": "2025-10-15T06:30:03.9789596Z"
+  },
+  {
+    "Id": 5,
+    "Username": "senior1",
+    "Email": "senior@company.com",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "FullName": "Senior Employee",
+    "Role": 3,
+    "CreatedAt": "2025-10-16T12:33:00Z",
+    "LastLogin": null
+  },
+  {
+    "Id": 6,
+    "Username": "employee1",
+    "Email": "employee@company.com",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "FullName": "Regular Employee",
+    "Role": 2,
+    "CreatedAt": "2025-10-16T12:33:00Z",
+    "LastLogin": null
   }
 ]
