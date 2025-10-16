@@ -80,6 +80,64 @@ public class EmployeeService : IEmployeeService
         return _employees.Count;
     }
 
+    public async Task<IEnumerable<Employee>> SearchEmployeesAsync(
+        string? searchTerm = null,
+        string? department = null,
+        string? sortBy = null,
+        bool sortDescending = false)
+    {
+        await Task.CompletedTask;
+        
+        var query = _employees.AsEnumerable();
+
+        // Search by name, department, or ID
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(e =>
+                e.FirstName.ToLower().Contains(term) ||
+                e.LastName.ToLower().Contains(term) ||
+                e.Department.ToLower().Contains(term) ||
+                e.Id.ToString().Contains(term));
+        }
+
+        // Filter by department
+        if (!string.IsNullOrWhiteSpace(department))
+        {
+            query = query.Where(e => e.Department.Equals(department, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Sort
+        query = sortBy?.ToLower() switch
+        {
+            "name" => sortDescending 
+                ? query.OrderByDescending(e => e.FirstName).ThenByDescending(e => e.LastName)
+                : query.OrderBy(e => e.FirstName).ThenBy(e => e.LastName),
+            "age" => sortDescending 
+                ? query.OrderByDescending(e => e.Age) 
+                : query.OrderBy(e => e.Age),
+            "salary" => sortDescending 
+                ? query.OrderByDescending(e => e.Salary) 
+                : query.OrderBy(e => e.Salary),
+            "department" => sortDescending 
+                ? query.OrderByDescending(e => e.Department) 
+                : query.OrderBy(e => e.Department),
+            _ => query.OrderBy(e => e.Id)
+        };
+
+        return query.ToList();
+    }
+
+    public async Task<IEnumerable<string>> GetDepartmentsAsync()
+    {
+        await Task.CompletedTask;
+        return _employees.Select(e => e.Department)
+            .Where(d => !string.IsNullOrWhiteSpace(d))
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+    }
+
     private async Task SaveToFileAsync()
     {
         await _fileLock.WaitAsync();

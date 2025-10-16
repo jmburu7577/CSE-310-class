@@ -7,7 +7,7 @@
     "FullName": "james mburu maina",
     "Role": 4,
     "CreatedAt": "2025-10-14T11:30:45.3356703Z",
-    "LastLogin": "2025-10-14T12:03:33.4396927Z"
+    "LastLogin": "2025-10-16T10:18:25.8025857Z"
   },
   {
     "Id": 2,
@@ -27,7 +27,7 @@
     "FullName": "admin",
     "Role": 5,
     "CreatedAt": "2025-10-14T12:07:39.6052631Z",
-    "LastLogin": "2025-10-15T06:38:46.8386458Z"
+    "LastLogin": "2025-10-16T12:38:03.1894444Z"
   },
   {
     "Id": 4,
@@ -38,5 +38,25 @@
     "Role": 5,
     "CreatedAt": "2025-10-15T06:10:00Z",
     "LastLogin": "2025-10-15T06:30:03.9789596Z"
+  },
+  {
+    "Id": 5,
+    "Username": "senior1",
+    "Email": "senior@company.com",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1\u002BgxwIyPqCKAn3THIKk=",
+    "FullName": "Senior Employee",
+    "Role": 3,
+    "CreatedAt": "2025-10-16T12:33:00Z",
+    "LastLogin": null
+  },
+  {
+    "Id": 6,
+    "Username": "employee1",
+    "Email": "employee@company.com",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1\u002BgxwIyPqCKAn3THIKk=",
+    "FullName": "Regular Employee",
+    "Role": 2,
+    "CreatedAt": "2025-10-16T12:33:00Z",
+    "LastLogin": null
   }
 ]

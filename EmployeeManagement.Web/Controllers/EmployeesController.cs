@@ -13,12 +13,18 @@ public class EmployeesController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
     private readonly IAuthService _authService;
+    private readonly IExportImportService _exportImportService;
     private readonly ILogger<EmployeesController> _logger;
 
-    public EmployeesController(IEmployeeService employeeService, IAuthService authService, ILogger<EmployeesController> logger)
+    public EmployeesController(
+        IEmployeeService employeeService, 
+        IAuthService authService, 
+        IExportImportService exportImportService,
+        ILogger<EmployeesController> logger)
     {
         _employeeService = employeeService;
         _authService = authService;
+        _exportImportService = exportImportService;
         _logger = logger;
     }
 
@@ -193,6 +199,188 @@ public class EmployeesController : ControllerBase
         {
             _logger.LogError(ex, "Error retrieving statistics");
             return StatusCode(500, "An error occurred while retrieving statistics");
+        }
+    }
+
+    /// <summary>
+    /// Search, filter, and sort employees
+    /// </summary>
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<Employee>>> SearchEmployees(
+        [FromQuery] string? searchTerm = null,
+        [FromQuery] string? department = null,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] bool sortDescending = false)
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.ViewEmployees))
+            {
+                return Forbid();
+            }
+
+            var employees = await _employeeService.SearchEmployeesAsync(searchTerm, department, sortBy, sortDescending);
+            return Ok(employees);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching employees");
+            return StatusCode(500, "An error occurred while searching employees");
+        }
+    }
+
+    /// <summary>
+    /// Get list of all departments
+    /// </summary>
+    [HttpGet("departments")]
+    public async Task<ActionResult<IEnumerable<string>>> GetDepartments()
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.ViewEmployees))
+            {
+                return Forbid();
+            }
+
+            var departments = await _employeeService.GetDepartmentsAsync();
+            return Ok(departments);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving departments");
+            return StatusCode(500, "An error occurred while retrieving departments");
+        }
+    }
+
+    /// <summary>
+    /// Export employees to CSV
+    /// </summary>
+    [HttpGet("export/csv")]
+    public async Task<IActionResult> ExportCsv([FromQuery] string? searchTerm = null, [FromQuery] string? department = null)
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.ViewEmployees))
+            {
+                return Forbid();
+            }
+
+            var employees = await _employeeService.SearchEmployeesAsync(searchTerm, department);
+            var csvData = await _exportImportService.ExportToCsvAsync(employees);
+            
+            return File(csvData, "text/csv", $"employees_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting to CSV");
+            return StatusCode(500, "An error occurred while exporting to CSV");
+        }
+    }
+
+    /// <summary>
+    /// Export employees to Excel
+    /// </summary>
+    [HttpGet("export/excel")]
+    public async Task<IActionResult> ExportExcel([FromQuery] string? searchTerm = null, [FromQuery] string? department = null)
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.ViewEmployees))
+            {
+                return Forbid();
+            }
+
+            var employees = await _employeeService.SearchEmployeesAsync(searchTerm, department);
+            var excelData = await _exportImportService.ExportToExcelAsync(employees);
+            
+            return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                $"employees_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting to Excel");
+            return StatusCode(500, "An error occurred while exporting to Excel");
+        }
+    }
+
+    /// <summary>
+    /// Export employees to PDF
+    /// </summary>
+    [HttpGet("export/pdf")]
+    public async Task<IActionResult> ExportPdf([FromQuery] string? searchTerm = null, [FromQuery] string? department = null)
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.ViewEmployees))
+            {
+                return Forbid();
+            }
+
+            var employees = await _employeeService.SearchEmployeesAsync(searchTerm, department);
+            var pdfData = await _exportImportService.ExportToPdfAsync(employees);
+            
+            return File(pdfData, "application/pdf", $"employees_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting to PDF");
+            return StatusCode(500, "An error occurred while exporting to PDF");
+        }
+    }
+
+    /// <summary>
+    /// Import employees from CSV file
+    /// </summary>
+    [HttpPost("import/csv")]
+    public async Task<ActionResult<ImportResult>> ImportCsv(IFormFile file)
+    {
+        try
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null || !_authService.HasPermission(currentUser, Permissions.AddEmployees))
+            {
+                return Forbid();
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            if (!file.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("File must be a CSV file");
+            }
+
+            using var stream = file.OpenReadStream();
+            var importResult = await _exportImportService.ImportFromCsvAsync(stream);
+
+            // Add successfully imported employees to the system
+            foreach (var employee in importResult.ImportedEmployees)
+            {
+                try
+                {
+                    await _employeeService.AddEmployeeAsync(employee);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    importResult.Errors.Add($"Employee ID {employee.Id}: {ex.Message}");
+                    importResult.SuccessfulImports--;
+                    importResult.FailedImports++;
+                }
+            }
+
+            return Ok(importResult);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error importing from CSV");
+            return StatusCode(500, "An error occurred while importing from CSV");
         }
     }
 }

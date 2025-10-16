@@ -375,6 +375,20 @@ function App() {
                                     <span>Add Employee</span>
                                 </button>
                             )}
+                            <a
+                                href="/leaves.html"
+                                className="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition flex items-center space-x-2"
+                            >
+                                <i className="fas fa-umbrella-beach"></i>
+                                <span>Leaves</span>
+                            </a>
+                            <a
+                                href="/payslips.html"
+                                className="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition flex items-center space-x-2"
+                            >
+                                <i className="fas fa-file-invoice-dollar"></i>
+                                <span>Payslips</span>
+                            </a>
                             {currentUser?.permissions?.includes('Users.Manage') && (
                                 <button
                                     onClick={() => window.location.href = '/user-management.html'}

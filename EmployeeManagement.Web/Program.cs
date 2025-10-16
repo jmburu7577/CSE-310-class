@@ -42,6 +42,9 @@ builder.Services.AddSwaggerGen(c =>
 // Register services as singleton to maintain state
 builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
 builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddSingleton<IPayslipService, PayslipService>();
+builder.Services.AddSingleton<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IExportImportService, ExportImportService>();
 
 // Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyForJWTTokenGeneration123456789";

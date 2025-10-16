@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management - Employee Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-umbrella-beach text-3xl"></i>
+                    <h1 class="text-3xl font-bold">Leave Management</h1>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="/" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 font-semibold">
+                        <i class="fas fa-users mr-2"></i>Employees
+                    </a>
+                    <span class="bg-green-500 bg-opacity-50 px-4 py-2 rounded-lg font-semibold border-2 border-white">
+                        <i class="fas fa-umbrella-beach mr-2"></i>Leaves
+                    </span>
+                    <a href="/payslips.html" class="bg-white bg-opacity-20 px-4 py-2 rounded-lg hover:bg-opacity-30 font-semibold">
+                        <i class="fas fa-file-invoice-dollar mr-2"></i>Payslips
+                    </a>
+                    <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 font-semibold ml-4">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Section -->
+    <div id="stats" class="bg-white border-b"></div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Actions -->
+        <div class="mb-6 flex justify-between items-center">
+            <button onclick="showRequestForm()" class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700">
+                <i class="fas fa-plus mr-2"></i>Request Leave
+            </button>
+            <select id="filterStatus" onchange="filterLeaves()" class="px-4 py-2 border rounded-lg">
+                <option value="">All Statuses</option>
+                <option value="1">Pending</option>
+                <option value="2">Approved</option>
+                <option value="3">Rejected</option>
+            </select>
+        </div>
+
+        <!-- Request Form (Hidden by default) -->
+        <div id="requestForm" class="bg-white rounded-lg shadow-md p-6 mb-6 hidden">
+            <h3 class="text-xl font-bold mb-4">New Leave Request</h3>
+            <form id="leaveForm" onsubmit="submitLeaveRequest(event)">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Employee</label>
+                        <select id="employeeSelect" class="w-full px-4 py-2 border rounded-lg" required></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Leave Type</label>
+                        <select id="leaveType" class="w-full px-4 py-2 border rounded-lg" required>
+                            <option value="1">Vacation</option>
+                            <option value="2">Sick</option>
+                            <option value="3">Unpaid</option>
+                            <option value="4">Personal</option>
+                            <option value="5">Maternity</option>
+                            <option value="6">Paternity</option>
+                            <option value="7">Bereavement</option>
+                            <option value="8">Study</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Start Date</label>
+                        <input type="date" id="startDate" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">End Date</label>
+                        <input type="date" id="endDate" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Reason</label>
+                    <textarea id="reason" class="w-full px-4 py-2 border rounded-lg" rows="3" required></textarea>
+                </div>
+                <div class="flex space-x-2">
+                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">Submit</button>
+                    <button type="button" onclick="hideRequestForm()" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Leaves List -->
+        <div id="leavesList"></div>
+    </div>
+
+    <!-- Balance Modal -->
+    <div id="balanceModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Leave Balance</h3>
+            <div id="balanceContent"></div>
+            <button onclick="closeBalanceModal()" class="mt-4 w-full bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/leaves';
+        const EMPLOYEES_BASE = '/api/employees';
+        
+        const getToken = () => localStorage.getItem('token');
+        const authHeaders = () => ({
+            'Authorization': `Bearer ${getToken()}`,
+            'Content-Type': 'application/json'
+        });
+
+        const LeaveTypes = { 1: 'Vacation', 2: 'Sick', 3: 'Unpaid', 4: 'Personal', 5: 'Maternity', 6: 'Paternity', 7: 'Bereavement', 8: 'Study' };
+        const LeaveStatus = {
+            1: { text: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
+            2: { text: 'Approved', color: 'bg-green-100 text-green-800' },
+            3: { text: 'Rejected', color: 'bg-red-100 text-red-800' },
+            4: { text: 'Cancelled', color: 'bg-gray-100 text-gray-800' }
+        };
+
+        let allLeaves = [];
+        let employees = [];
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/';
+        }
+
+        async function loadData() {
+            if (!getToken()) {
+                window.location.href = '/';
+                return;
+            }
+            
+            await Promise.all([fetchLeaves(), fetchEmployees(), fetchStats()]);
+        }
+
+        async function fetchLeaves() {
+            try {
+                const response = await fetch(API_BASE, { headers: authHeaders() });
+                allLeaves = await response.json();
+                renderLeaves();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function fetchEmployees() {
+            try {
+                const response = await fetch(EMPLOYEES_BASE, { headers: authHeaders() });
+                employees = await response.json();
+                populateEmployeeSelect();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`, { headers: authHeaders() });
+                const stats = await response.json();
+                renderStats(stats);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function renderStats(stats) {
+            document.getElementById('stats').innerHTML = `
+                <div class="container mx-auto px-4 py-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 rounded-lg p-4 flex items-center space-x-4">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg"><i class="fas fa-clipboard-list text-2xl"></i></div>
+                            <div><p class="text-sm text-gray-600">Total Requests</p><p class="text-2xl font-bold">${stats.totalRequests}</p></div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4 flex items-center space-x-4">
+                            <div class="bg-yellow-100 text-yellow-600 p-3 rounded-lg"><i class="fas fa-clock text-2xl"></i></div>
+                            <div><p class="text-sm text-gray-600">Pending</p><p class="text-2xl font-bold">${stats.pendingRequests}</p></div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4 flex items-center space-x-4">
+                            <div class="bg-green-100 text-green-600 p-3 rounded-lg"><i class="fas fa-check-circle text-2xl"></i></div>
+                            <div><p class="text-sm text-gray-600">Approved</p><p class="text-2xl font-bold">${stats.approvedRequests}</p></div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4 flex items-center space-x-4">
+                            <div class="bg-red-100 text-red-600 p-3 rounded-lg"><i class="fas fa-times-circle text-2xl"></i></div>
+                            <div><p class="text-sm text-gray-600">Rejected</p><p class="text-2xl font-bold">${stats.rejectedRequests}</p></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLeaves() {
+            const filter = document.getElementById('filterStatus').value;
+            const filtered = filter ? allLeaves.filter(l => l.status == filter) : allLeaves;
+
+            if (filtered.length === 0) {
+                document.getElementById('leavesList').innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow">
+                        <i class="fas fa-umbrella-beach text-6xl text-gray-300"></i>
+                        <p class="mt-4 text-xl text-gray-600">No leave requests found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('leavesList').innerHTML = filtered.map(leave => {
+                const emp = employees.find(e => e.id === leave.employeeId);
+                const status = LeaveStatus[leave.status];
+                return `
+                    <div class="bg-white rounded-lg shadow-md p-6 mb-4">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold">${emp ? emp.firstName + ' ' + emp.lastName : 'Employee #' + leave.employeeId}</h3>
+                                <p class="text-sm text-gray-500">Request ID: ${leave.id}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold ${status.color}">${status.text}</span>
+                                <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs font-semibold">${LeaveTypes[leave.type]}</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <div><p class="text-sm text-gray-500">Start Date</p><p class="font-semibold">${new Date(leave.startDate).toLocaleDateString()}</p></div>
+                            <div><p class="text-sm text-gray-500">End Date</p><p class="font-semibold">${new Date(leave.endDate).toLocaleDateString()}</p></div>
+                            <div><p class="text-sm text-gray-500">Days</p><p class="font-semibold">${leave.days} days</p></div>
+                            <div><p class="text-sm text-gray-500">Requested</p><p class="font-semibold">${new Date(leave.requestedDate).toLocaleDateString()}</p></div>
+                        </div>
+                        <div class="mb-4"><p class="text-sm text-gray-500">Reason</p><p>${leave.reason}</p></div>
+                        ${leave.approverNotes ? `<div class="mb-4 p-3 bg-blue-50 rounded"><p class="text-sm text-gray-500">Manager Notes</p><p>${leave.approverNotes}</p></div>` : ''}
+                        <div class="flex space-x-2">
+                            ${leave.status === 1 ? `
+                                <button onclick="approveLeave(${leave.id})" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"><i class="fas fa-check mr-2"></i>Approve</button>
+                                <button onclick="rejectLeave(${leave.id})" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"><i class="fas fa-times mr-2"></i>Reject</button>
+                            ` : ''}
+                            <button onclick="viewBalance(${leave.employeeId})" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"><i class="fas fa-calendar-check mr-2"></i>View Balance</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function populateEmployeeSelect() {
+            document.getElementById('employeeSelect').innerHTML = '<option value="">Select Employee</option>' +
+                employees.map(emp => `<option value="${emp.id}">${emp.firstName} ${emp.lastName} (ID: ${emp.id})</option>`).join('');
+        }
+
+        function showRequestForm() {
+            document.getElementById('requestForm').classList.remove('hidden');
+        }
+
+        function hideRequestForm() {
+            document.getElementById('requestForm').classList.add('hidden');
+            document.getElementById('leaveForm').reset();
+        }
+
+        function filterLeaves() {
+            renderLeaves();
+        }
+
+        async function submitLeaveRequest(event) {
+            event.preventDefault();
+            const empId = document.getElementById('employeeSelect').value;
+            const data = {
+                type: parseInt(document.getElementById('leaveType').value),
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                reason: document.getElementById('reason').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/employee/${empId}`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Leave request submitted successfully!');
+                    hideRequestForm();
+                    loadData();
+                } else {
+                    alert('Failed to submit leave request');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting request');
+            }
+        }
+
+        async function approveLeave(id) {
+            const notes = prompt('Enter approval notes (optional):');
+            try {
+                const response = await fetch(`${API_BASE}/${id}/approve`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ approve: true, notes: notes || '' })
+                });
+                if (response.ok) {
+                    alert('Leave approved!');
+                    loadData();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function rejectLeave(id) {
+            const notes = prompt('Enter rejection reason:');
+            if (!notes) return;
+            try {
+                const response = await fetch(`${API_BASE}/${id}/reject`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({ approve: false, notes })
+                });
+                if (response.ok) {
+                    alert('Leave rejected!');
+                    loadData();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function viewBalance(empId) {
+            try {
+                const year = new Date().getFullYear();
+                const response = await fetch(`${API_BASE}/balance/${empId}?year=${year}`, { headers: authHeaders() });
+                const balance = await response.json();
+                document.getElementById('balanceContent').innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded">
+                            <span>Vacation Days</span>
+                            <span class="font-bold">${balance.vacationRemaining} / ${balance.vacationDays}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded">
+                            <span>Sick Days</span>
+                            <span class="font-bold">${balance.sickRemaining} / ${balance.sickDays}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-purple-50 rounded">
+                            <span>Personal Days</span>
+                            <span class="font-bold">${balance.personalRemaining} / ${balance.personalDays}</span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('balanceModal').classList.remove('hidden');
+                document.getElementById('balanceModal').classList.add('flex');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function closeBalanceModal() {
+            document.getElementById('balanceModal').classList.add('hidden');
+            document.getElementById('balanceModal').classList.remove('flex');
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>
