@@ -358,8 +358,8 @@ function App() {
                             <i className="fas fa-users text-3xl"></i>
                             <h1 className="text-3xl font-bold">Employee Management System</h1>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <div className="text-right mr-4">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-right mr-2">
                                 <p className="text-sm opacity-90">Welcome,</p>
                                 <p className="font-semibold">{currentUser?.fullName || currentUser?.username}</p>
                                 <p className="text-xs opacity-75">
@@ -369,7 +369,7 @@ function App() {
                             {currentUser?.permissions?.includes('Employees.Add') && (
                                 <button
                                     onClick={handleAddEmployee}
-                                    className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center space-x-2"
+                                    className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center space-x-2"
                                 >
                                     <i className="fas fa-plus"></i>
                                     <span>Add Employee</span>
@@ -377,30 +377,83 @@ function App() {
                             )}
                             <a
                                 href="/leaves.html"
-                                className="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition flex items-center space-x-2"
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition flex items-center space-x-2"
                             >
                                 <i className="fas fa-umbrella-beach"></i>
                                 <span>Leaves</span>
                             </a>
                             <a
                                 href="/payslips.html"
-                                className="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition flex items-center space-x-2"
+                                className="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition flex items-center space-x-2"
                             >
                                 <i className="fas fa-file-invoice-dollar"></i>
                                 <span>Payslips</span>
                             </a>
+                            {/* NEW MODULES DROPDOWN */}
+                            <div className="relative group">
+                                <button className="bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 transition flex items-center space-x-2">
+                                    <i className="fas fa-th"></i>
+                                    <span>All Modules</span>
+                                    <i className="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-2xl hidden group-hover:block z-50 border border-gray-200">
+                                    <div className="py-2">
+                                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">HR Modules</div>
+                                        <a href="/recruitment.html" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-briefcase text-blue-500 w-6"></i>
+                                            <span className="font-semibold">Recruitment</span>
+                                            <p className="text-xs text-gray-500">Jobs, Applications, Interviews</p>
+                                        </a>
+                                        <a href="/attendance.html" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-clock text-green-500 w-6"></i>
+                                            <span className="font-semibold">Attendance</span>
+                                            <p className="text-xs text-gray-500">Clock In/Out, Timesheets</p>
+                                        </a>
+                                        <a href="/swagger/index.html#/Performance" target="_blank" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-chart-line text-purple-500 w-6"></i>
+                                            <span className="font-semibold">Performance</span>
+                                            <p className="text-xs text-gray-500">Goals, Reviews (API)</p>
+                                        </a>
+                                        <a href="/swagger/index.html#/Training" target="_blank" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-graduation-cap text-indigo-500 w-6"></i>
+                                            <span className="font-semibold">Training</span>
+                                            <p className="text-xs text-gray-500">Courses, Certifications (API)</p>
+                                        </a>
+                                        <a href="/swagger/index.html#/Asset" target="_blank" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-laptop text-orange-500 w-6"></i>
+                                            <span className="font-semibold">Asset Management</span>
+                                            <p className="text-xs text-gray-500">Equipment (API)</p>
+                                        </a>
+                                        <a href="/swagger/index.html#/Helpdesk" target="_blank" className="block px-4 py-3 hover:bg-gray-50 text-gray-700 border-b">
+                                            <i className="fas fa-headset text-teal-500 w-6"></i>
+                                            <span className="font-semibold">Helpdesk</span>
+                                            <p className="text-xs text-gray-500">Tickets, KB (API)</p>
+                                        </a>
+                                        <a href="/swagger/index.html#/Offboarding" target="_blank" className="block px-4 py-3 hover:bg-gray-50 text-gray-700">
+                                            <i className="fas fa-sign-out-alt text-red-500 w-6"></i>
+                                            <span className="font-semibold">Offboarding</span>
+                                            <p className="text-xs text-gray-500">Resignations (API)</p>
+                                        </a>
+                                        <div className="border-t mt-2 pt-2">
+                                            <a href="/swagger" target="_blank" className="block px-4 py-2 hover:bg-indigo-50 text-indigo-600 font-semibold text-center">
+                                                <i className="fas fa-code mr-2"></i>API Documentation
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {currentUser?.permissions?.includes('Users.Manage') && (
                                 <button
                                     onClick={() => window.location.href = '/user-management.html'}
-                                    className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition flex items-center space-x-2"
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition flex items-center space-x-2"
                                 >
                                     <i className="fas fa-users-cog"></i>
-                                    <span>Manage Users</span>
+                                    <span>Users</span>
                                 </button>
                             )}
                             <button
                                 onClick={handleLogout}
-                                className="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 transition flex items-center space-x-2"
+                                className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition flex items-center space-x-2"
                             >
                                 <i className="fas fa-sign-out-alt"></i>
                                 <span>Logout</span>

@@ -46,6 +46,15 @@ builder.Services.AddSingleton<IPayslipService, PayslipService>();
 builder.Services.AddSingleton<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IExportImportService, ExportImportService>();
 
+// Register new HR management services
+builder.Services.AddSingleton<IRecruitmentService, RecruitmentService>();
+builder.Services.AddSingleton<IAttendanceService, AttendanceService>();
+builder.Services.AddSingleton<IPerformanceService, PerformanceService>();
+builder.Services.AddSingleton<ITrainingService, TrainingService>();
+builder.Services.AddSingleton<IAssetService, AssetService>();
+builder.Services.AddSingleton<IHelpdeskService, HelpdeskService>();
+builder.Services.AddSingleton<IOffboardingService, OffboardingService>();
+
 // Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyForJWTTokenGeneration123456789";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "EmployeeManagementApp";

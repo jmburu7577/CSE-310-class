@@ -27,7 +27,7 @@
     "FullName": "admin",
     "Role": 5,
     "CreatedAt": "2025-10-14T12:07:39.6052631Z",
-    "LastLogin": "2025-10-16T12:23:55.6088007Z"
+    "LastLogin": "2025-10-18T15:06:29.7636136Z"
   },
   {
     "Id": 4,
@@ -43,7 +43,7 @@
     "Id": 5,
     "Username": "senior1",
     "Email": "senior@company.com",
-    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1\u002BgxwIyPqCKAn3THIKk=",
     "FullName": "Senior Employee",
     "Role": 3,
     "CreatedAt": "2025-10-16T12:33:00Z",
@@ -53,7 +53,7 @@
     "Id": 6,
     "Username": "employee1",
     "Email": "employee@company.com",
-    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+    "PasswordHash": "JAvlGPq9JyTdtvBO6x2llnRI1\u002BgxwIyPqCKAn3THIKk=",
     "FullName": "Regular Employee",
     "Role": 2,
     "CreatedAt": "2025-10-16T12:33:00Z",

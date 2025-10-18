@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance & Time Tracking - Employee Management System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const API_BASE = '/api/attendance';
+        const getToken = () => localStorage.getItem('token');
+        const getUser = () => {
+            const user = localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
+        };
+
+        const authFetch = async (url, options = {}) => {
+            const token = getToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            return fetch(url, { ...options, headers });
+        };
+
+        function AttendanceApp() {
+            const [currentUser, setCurrentUser] = useState(null);
+            const [activeTab, setActiveTab] = useState('clock');
+            const [attendance, setAttendance] = useState([]);
+            const [timesheets, setTimesheets] = useState([]);
+            const [holidays, setHolidays] = useState([]);
+            const [stats, setStats] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [employeeId, setEmployeeId] = useState('');
+            const [location, setLocation] = useState('Office');
+            const [clockMessage, setClockMessage] = useState('');
+
+            useEffect(() => {
+                const user = getUser();
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+                setCurrentUser(user);
+                fetchData();
+            }, []);
+
+            const fetchData = async () => {
+                try {
+                    const [attendanceRes, timesheetsRes, holidaysRes, statsRes] = await Promise.all([
+                        authFetch(`${API_BASE}`),
+                        authFetch(`${API_BASE}/timesheets`),
+                        authFetch(`${API_BASE}/holidays`),
+                        authFetch(`${API_BASE}/stats`)
+                    ]);
+
+                    if (attendanceRes.ok) setAttendance(await attendanceRes.json());
+                    if (timesheetsRes.ok) setTimesheets(await timesheetsRes.json());
+                    if (holidaysRes.ok) setHolidays(await holidaysRes.json());
+                    if (statsRes.ok) setStats(await statsRes.json());
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    setLoading(false);
+                }
+            };
+
+            const handleClockIn = async () => {
+                if (!employeeId) {
+                    alert('Please enter Employee ID');
+                    return;
+                }
+                try {
+                    const response = await authFetch(`${API_BASE}/clock-in?employeeId=${employeeId}&location=${location}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setClockMessage(`✅ Clocked in successfully at ${new Date(data.clockIn).toLocaleTimeString()}`);
+                        fetchData();
+                        setTimeout(() => setClockMessage(''), 3000);
+                    } else {
+                        const error = await response.text();
+                        setClockMessage(`❌ ${error}`);
+                    }
+                } catch (error) {
+                    setClockMessage(`❌ Error: ${error.message}`);
+                }
+            };
+
+            const handleClockOut = async () => {
+                if (!employeeId) {
+                    alert('Please enter Employee ID');
+                    return;
+                }
+                try {
+                    const response = await authFetch(`${API_BASE}/clock-out?employeeId=${employeeId}&location=${location}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setClockMessage(`✅ Clocked out successfully at ${new Date(data.clockOut).toLocaleTimeString()}`);
+                        fetchData();
+                        setTimeout(() => setClockMessage(''), 3000);
+                    } else {
+                        const error = await response.text();
+                        setClockMessage(`❌ ${error}`);
+                    }
+                } catch (error) {
+                    setClockMessage(`❌ Error: ${error.message}`);
+                }
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <i className="fas fa-spinner fa-spin text-4xl text-purple-600"></i>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <header className="gradient-bg text-white shadow-lg">
+                        <div className="container mx-auto px-4 py-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <i className="fas fa-clock text-3xl"></i>
+                                    <div>
+                                        <h1 className="text-3xl font-bold">Attendance & Time Tracking</h1>
+                                        <p className="text-sm opacity-90">Manage clock in/out, timesheets, and holidays</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <a href="/" className="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100">
+                                        <i className="fas fa-home mr-2"></i>Home
+                                    </a>
+                                    <button onClick={() => {localStorage.clear(); window.location.href = '/';}} 
+                                        className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600">
+                                        <i className="fas fa-sign-out-alt mr-2"></i>Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {stats && (
+                        <div className="bg-white border-b">
+                            <div className="container mx-auto px-4 py-6">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div className="bg-green-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-green-100 text-green-600 p-3 rounded-lg">
+                                            <i className="fas fa-check-circle text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">Total Records</p>
+                                            <p className="text-2xl font-bold">{stats.totalRecords || 0}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-blue-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-blue-100 text-blue-600 p-3 rounded-lg">
+                                            <i className="fas fa-file-alt text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">Timesheets</p>
+                                            <p className="text-2xl font-bold">{stats.totalTimesheets || 0}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-purple-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-purple-100 text-purple-600 p-3 rounded-lg">
+                                            <i className="fas fa-calendar text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">Holidays</p>
+                                            <p className="text-2xl font-bold">{stats.totalHolidays || 0}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-orange-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-orange-100 text-orange-600 p-3 rounded-lg">
+                                            <i className="fas fa-clock text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">Overtime Records</p>
+                                            <p className="text-2xl font-bold">{stats.totalOvertimeRecords || 0}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="container mx-auto px-4 py-6">
+                        <div className="flex space-x-2 mb-6 border-b">
+                            <button onClick={() => setActiveTab('clock')} 
+                                className={`px-6 py-3 font-semibold ${activeTab === 'clock' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-clock mr-2"></i>Clock In/Out
+                            </button>
+                            <button onClick={() => setActiveTab('attendance')} 
+                                className={`px-6 py-3 font-semibold ${activeTab === 'attendance' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-list mr-2"></i>Attendance Records ({attendance.length})
+                            </button>
+                            <button onClick={() => setActiveTab('timesheets')} 
+                                className={`px-6 py-3 font-semibold ${activeTab === 'timesheets' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-file-alt mr-2"></i>Timesheets ({timesheets.length})
+                            </button>
+                            <button onClick={() => setActiveTab('holidays')} 
+                                className={`px-6 py-3 font-semibold ${activeTab === 'holidays' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-calendar mr-2"></i>Holidays ({holidays.length})
+                            </button>
+                        </div>
+
+                        {activeTab === 'clock' && (
+                            <div className="max-w-2xl mx-auto">
+                                <div className="bg-white rounded-lg shadow-lg p-8">
+                                    <div className="text-center mb-8">
+                                        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full mb-4">
+                                            <i className="fas fa-clock text-white text-3xl"></i>
+                                        </div>
+                                        <h2 className="text-3xl font-bold text-gray-800">Time Clock</h2>
+                                        <p className="text-gray-600 mt-2">Record your working hours</p>
+                                    </div>
+
+                                    {clockMessage && (
+                                        <div className={`mb-6 p-4 rounded-lg ${clockMessage.includes('✅') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            {clockMessage}
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-4 mb-6">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID *</label>
+                                            <input type="number" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}
+                                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                                placeholder="Enter your employee ID" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                            <select value={location} onChange={(e) => setLocation(e.target.value)}
+                                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                                                <option>Office</option>
+                                                <option>Remote</option>
+                                                <option>Client Site</option>
+                                                <option>Field</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button onClick={handleClockIn} 
+                                            className="bg-green-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-600 transition">
+                                            <i className="fas fa-sign-in-alt mr-2"></i>CLOCK IN
+                                        </button>
+                                        <button onClick={handleClockOut} 
+                                            className="bg-red-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-red-600 transition">
+                                            <i className="fas fa-sign-out-alt mr-2"></i>CLOCK OUT
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-6 text-center text-sm text-gray-500">
+                                        <p>Current Time: <span className="font-semibold">{new Date().toLocaleString()}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'attendance' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Attendance Records</h2>
+                                <div className="bg-white rounded-lg shadow overflow-hidden">
+                                    <table className="min-w-full">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee ID</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Clock In</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Clock Out</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {attendance.map(record => (
+                                                <tr key={record.id} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap font-medium">{record.employeeId}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{new Date(record.date).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{record.clockIn ? new Date(record.clockIn).toLocaleTimeString() : '-'}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{record.clockOut ? new Date(record.clockOut).toLocaleTimeString() : '-'}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{record.location}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                                            record.status === 0 ? 'bg-green-100 text-green-600' : 
+                                                            record.status === 1 ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'
+                                                        }`}>
+                                                            {['Present', 'Absent', 'Half Day', 'Leave'][record.status]}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'timesheets' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Timesheets</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {timesheets.map(timesheet => (
+                                        <div key={timesheet.id} className="bg-white rounded-lg shadow-md p-6">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <h3 className="text-lg font-bold">Employee #{timesheet.employeeId}</h3>
+                                                    <p className="text-sm text-gray-600">
+                                                        {new Date(timesheet.weekStart).toLocaleDateString()} - {new Date(timesheet.weekEnd).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                                    timesheet.status === 0 ? 'bg-yellow-100 text-yellow-600' : 
+                                                    timesheet.status === 1 ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'
+                                                }`}>
+                                                    {['Draft', 'Submitted', 'Approved'][timesheet.status]}
+                                                </span>
+                                            </div>
+                                            <div className="space-y-2 text-sm">
+                                                <p><i className="fas fa-clock w-5 text-gray-400"></i>Total Hours: {timesheet.totalHours}</p>
+                                                <p><i className="fas fa-list w-5 text-gray-400"></i>Entries: {timesheet.entries?.length || 0}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'holidays' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Company Holidays</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {holidays.map(holiday => (
+                                        <div key={holiday.id} className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h3 className="text-lg font-bold text-gray-800">{holiday.name}</h3>
+                                                {holiday.isOptional && (
+                                                    <span className="px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded">Optional</span>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-gray-600 mb-2">{holiday.description}</p>
+                                            <p className="text-sm font-semibold text-purple-600">
+                                                <i className="fas fa-calendar-day mr-2"></i>
+                                                {new Date(holiday.date).toLocaleDateString('en-US', { 
+                                                    weekday: 'long', 
+                                                    year: 'numeric', 
+                                                    month: 'long', 
+                                                    day: 'numeric' 
+                                                })}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AttendanceApp />);
+    </script>
+</body>
+</html>

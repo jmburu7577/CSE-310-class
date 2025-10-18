@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training & Development - Employee Management System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const API_BASE = '/api/training';
+        const getToken = () => localStorage.getItem('token');
+        const getUser = () => JSON.parse(localStorage.getItem('user') || 'null');
+        const authFetch = async (url, options = {}) => {
+            const token = getToken();
+            return fetch(url, { ...options, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, ...options.headers }});
+        };
+
+        function TrainingApp() {
+            const [currentUser, setCurrentUser] = useState(null);
+            const [activeTab, setActiveTab] = useState('courses');
+            const [courses, setCourses] = useState([]);
+            const [enrollments, setEnrollments] = useState([]);
+            const [certifications, setCertifications] = useState([]);
+            const [stats, setStats] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [showCourseModal, setShowCourseModal] = useState(false);
+
+            useEffect(() => {
+                const user = getUser();
+                if (!user) { window.location.href = '/'; return; }
+                setCurrentUser(user);
+                fetchData();
+            }, []);
+
+            const fetchData = async () => {
+                try {
+                    const [coursesRes, enrollmentsRes, certificationsRes, statsRes] = await Promise.all([
+                        authFetch(`${API_BASE}/courses`),
+                        authFetch(`${API_BASE}/enrollments`),
+                        authFetch(`${API_BASE}/certifications`),
+                        authFetch(`${API_BASE}/stats`)
+                    ]);
+                    if (coursesRes.ok) setCourses(await coursesRes.json());
+                    if (enrollmentsRes.ok) setEnrollments(await enrollmentsRes.json());
+                    if (certificationsRes.ok) setCertifications(await certificationsRes.json());
+                    if (statsRes.ok) setStats(await statsRes.json());
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setLoading(false);
+                }
+            };
+
+            const handleSaveCourse = async (courseData) => {
+                try {
+                    const response = await authFetch(`${API_BASE}/courses`, { method: 'POST', body: JSON.stringify(courseData) });
+                    if (response.ok) { setShowCourseModal(false); fetchData(); }
+                } catch (error) { console.error('Error:', error); }
+            };
+
+            if (loading) return (<div className="min-h-screen flex items-center justify-center"><i className="fas fa-spinner fa-spin text-4xl text-purple-600"></i></div>);
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <header className="gradient-bg text-white shadow-lg">
+                        <div className="container mx-auto px-4 py-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <i className="fas fa-graduation-cap text-3xl"></i>
+                                    <div><h1 className="text-3xl font-bold">Training & Development</h1><p className="text-sm opacity-90">Courses, Certifications, and Skills</p></div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <a href="/" className="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100"><i className="fas fa-home mr-2"></i>Home</a>
+                                    <button onClick={() => {localStorage.clear(); window.location.href = '/';}} className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600"><i className="fas fa-sign-out-alt mr-2"></i>Logout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {stats && (
+                        <div className="bg-white border-b">
+                            <div className="container mx-auto px-4 py-6">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div className="bg-indigo-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-indigo-100 text-indigo-600 p-3 rounded-lg"><i className="fas fa-book text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Total Courses</p><p className="text-2xl font-bold">{stats.totalCourses || 0}</p></div>
+                                    </div>
+                                    <div className="bg-blue-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-blue-100 text-blue-600 p-3 rounded-lg"><i className="fas fa-users text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Enrollments</p><p className="text-2xl font-bold">{stats.totalEnrollments || 0}</p></div>
+                                    </div>
+                                    <div className="bg-green-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-green-100 text-green-600 p-3 rounded-lg"><i className="fas fa-certificate text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Certifications</p><p className="text-2xl font-bold">{stats.totalCertifications || 0}</p></div>
+                                    </div>
+                                    <div className="bg-purple-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-purple-100 text-purple-600 p-3 rounded-lg"><i className="fas fa-check-circle text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Completed</p><p className="text-2xl font-bold">{stats.completedEnrollments || 0}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="container mx-auto px-4 py-6">
+                        <div className="flex space-x-2 mb-6 border-b">
+                            <button onClick={() => setActiveTab('courses')} className={`px-6 py-3 font-semibold ${activeTab === 'courses' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-book mr-2"></i>Courses ({courses.length})
+                            </button>
+                            <button onClick={() => setActiveTab('enrollments')} className={`px-6 py-3 font-semibold ${activeTab === 'enrollments' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-users mr-2"></i>Enrollments ({enrollments.length})
+                            </button>
+                            <button onClick={() => setActiveTab('certifications')} className={`px-6 py-3 font-semibold ${activeTab === 'certifications' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-certificate mr-2"></i>Certifications ({certifications.length})
+                            </button>
+                        </div>
+
+                        {activeTab === 'courses' && (
+                            <div>
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-bold text-gray-800">Training Courses</h2>
+                                    <button onClick={() => setShowCourseModal(true)} className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                                        <i className="fas fa-plus mr-2"></i>Add Course
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {courses.map(course => (
+                                        <div key={course.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h3 className="text-lg font-bold text-gray-800">{course.title}</h3>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${course.status === 0 ? 'bg-green-100 text-green-600' : course.status === 1 ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-100 text-gray-600'}`}>
+                                                    {['Active', 'Full', 'Completed', 'Cancelled'][course.status]}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-600 mb-4">{course.description}</p>
+                                            <div className="space-y-2 text-sm">
+                                                <p><i className="fas fa-tag w-5 text-gray-400"></i>{course.category}</p>
+                                                <p><i className="fas fa-user w-5 text-gray-400"></i>{course.instructor}</p>
+                                                <p><i className="fas fa-clock w-5 text-gray-400"></i>{course.durationHours}hrs</p>
+                                                <p><i className="fas fa-users w-5 text-gray-400"></i>Max: {course.maxParticipants}</p>
+                                                <p><i className="fas fa-dollar-sign w-5 text-gray-400"></i>${course.cost}</p>
+                                                <p><i className="fas fa-signal w-5 text-gray-400"></i>{course.level}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'enrollments' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Course Enrollments</h2>
+                                <div className="bg-white rounded-lg shadow overflow-hidden">
+                                    <table className="min-w-full">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Schedule ID</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Enrollment Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Completion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {enrollments.map(enrollment => (
+                                                <tr key={enrollment.id} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap font-medium">Employee #{enrollment.employeeId}</td>
+                                                    <td className="px-6 py-4">Schedule #{enrollment.scheduleId}</td>
+                                                    <td className="px-6 py-4">{new Date(enrollment.enrollmentDate).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${enrollment.status === 2 ? 'bg-green-100 text-green-600' : enrollment.status === 1 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+                                                            {['Enrolled', 'In Progress', 'Completed', 'Dropped'][enrollment.status]}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">{enrollment.completionDate ? new Date(enrollment.completionDate).toLocaleDateString() : '-'}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'certifications' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Employee Certifications</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {certifications.map(cert => (
+                                        <div key={cert.id} className="bg-white rounded-lg shadow-md p-6 border-l-4 border-indigo-500">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <h3 className="text-lg font-bold text-gray-800">{cert.name}</h3>
+                                                {cert.isVerified && <span className="text-green-500"><i className="fas fa-check-circle"></i></span>}
+                                            </div>
+                                            <p className="text-sm text-gray-600 mb-3">{cert.issuingOrganization}</p>
+                                            <div className="space-y-2 text-sm">
+                                                <p><i className="fas fa-user w-5 text-gray-400"></i>Employee #{cert.employeeId}</p>
+                                                <p><i className="fas fa-id-card w-5 text-gray-400"></i>{cert.certificationNumber}</p>
+                                                <p><i className="fas fa-calendar-check w-5 text-gray-400"></i>Issued: {new Date(cert.issueDate).toLocaleDateString()}</p>
+                                                <p><i className="fas fa-calendar-times w-5 text-gray-400"></i>Expires: {cert.expiryDate ? new Date(cert.expiryDate).toLocaleDateString() : 'Never'}</p>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${cert.status === 0 ? 'bg-green-100 text-green-600' : cert.status === 1 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}`}>
+                                                    {['Active', 'Expiring Soon', 'Expired'][cert.status]}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {showCourseModal && <CourseModal onClose={() => setShowCourseModal(false)} onSave={handleSaveCourse} />}
+                </div>
+            );
+        }
+
+        function CourseModal({ onClose, onSave }) {
+            const [formData, setFormData] = useState({ title: '', description: '', category: 'Technical', instructor: '', durationHours: '', type: 0, level: 'Beginner', cost: 0, maxParticipants: 20, status: 0, prerequisites: [] });
+            const handleChange = (e) => { const { name, value } = e.target; setFormData({ ...formData, [name]: ['durationHours', 'type', 'cost', 'maxParticipants', 'status'].includes(name) ? parseInt(value) : value }); };
+            const handleSubmit = (e) => { e.preventDefault(); onSave(formData); };
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b flex justify-between items-center">
+                            <h2 className="text-2xl font-bold">Create Training Course</h2>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><i className="fas fa-times text-2xl"></i></button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div><label className="block text-sm font-medium text-gray-700 mb-2">Course Title *</label><input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required /></div>
+                            <div><label className="block text-sm font-medium text-gray-700 mb-2">Description *</label><textarea name="description" value={formData.description} onChange={handleChange} rows="3" className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required /></div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Category</label><input type="text" name="category" value={formData.category} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Instructor *</label><input type="text" name="instructor" value={formData.instructor} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required /></div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Duration (hrs)</label><input type="number" name="durationHours" value={formData.durationHours} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Level</label><select name="level" value={formData.level} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Max Participants</label><input type="number" name="maxParticipants" value={formData.maxParticipants} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Type</label><select name="type" value={formData.type} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"><option value="0">Classroom</option><option value="1">Online</option><option value="2">Hybrid</option></select></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Cost ($)</label><input type="number" name="cost" value={formData.cost} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            </div>
+                            <div className="flex space-x-4 pt-4">
+                                <button type="submit" className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700"><i className="fas fa-save mr-2"></i>Create Course</button>
+                                <button type="button" onClick={onClose} className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<TrainingApp />);
+    </script>
+</body>
+</html>

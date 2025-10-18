@@ -61,6 +61,9 @@ C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\bin\Debug\net9.0\run
 C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\bin\Debug\net9.0\runtimes\win-arm64\native\libSkiaSharp.dll
 C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\bin\Debug\net9.0\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\bin\Debug\net9.0\runtimes\win-x86\native\libSkiaSharp.dll
-C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\h11g5tqs4g-8m3krdi4cg.gz
 C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\yniovnuti3-aq3wyl6l5j.gz
 C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\5w1gitct9l-bnvjjv3nkb.gz
+C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\bin\Debug\net9.0\Data\attendance.json
+C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\h11g5tqs4g-auiw48nq6k.gz
+C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\dekxyqemzp-uix4dea5up.gz
+C:\Users\BYU\Desktop\CSE-310-class-1\EmployeeManagement.Web\obj\Debug\net9.0\compressed\nib1qv0dzj-cq5rcr3mqw.gz
