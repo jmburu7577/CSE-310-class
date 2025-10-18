@@ -3,70 +3,135 @@
     "Id": 2020203,
     "FirstName": "john",
     "LastName": "kamau",
+    "DateOfBirth": "0001-01-01T00:00:00",
     "Age": 45,
+    "Email": "",
+    "Phone": "",
     "Department": "HR",
+    "Designation": "",
+    "ManagerId": null,
     "Salary": 1234,
+    "JoinDate": "0001-01-01T00:00:00",
     "Address": {
       "Street": "2m",
       "City": "nairobi",
       "State": "nairobi",
       "Zip": "00200"
-    }
+    },
+    "EmergencyContact": {
+      "Name": "",
+      "Relationship": "",
+      "Phone": "",
+      "Email": ""
+    },
+    "Documents": []
   },
   {
     "Id": 91233,
     "FirstName": "john",
     "LastName": "maina",
+    "DateOfBirth": "0001-01-01T00:00:00",
     "Age": 123,
+    "Email": "",
+    "Phone": "",
     "Department": "Admin",
+    "Designation": "",
+    "ManagerId": null,
     "Salary": 1236,
+    "JoinDate": "0001-01-01T00:00:00",
     "Address": {
       "Street": "k1",
       "City": "nairobi",
       "State": "upperhill",
       "Zip": "00200"
-    }
+    },
+    "EmergencyContact": {
+      "Name": "",
+      "Relationship": "",
+      "Phone": "",
+      "Email": ""
+    },
+    "Documents": []
   },
   {
     "Id": 252525,
     "FirstName": "Ann",
     "LastName": "nyambura",
+    "DateOfBirth": "0001-01-01T00:00:00",
     "Age": 45,
+    "Email": "",
+    "Phone": "",
     "Department": "Math",
+    "Designation": "",
+    "ManagerId": null,
     "Salary": 1234,
+    "JoinDate": "0001-01-01T00:00:00",
     "Address": {
       "Street": "5",
       "City": "nairobi",
       "State": "upperhill",
       "Zip": "00200"
-    }
+    },
+    "EmergencyContact": {
+      "Name": "",
+      "Relationship": "",
+      "Phone": "",
+      "Email": ""
+    },
+    "Documents": []
   },
   {
     "Id": 202002,
     "FirstName": "Ann",
     "LastName": "m",
+    "DateOfBirth": "0001-01-01T00:00:00",
     "Age": 23,
+    "Email": "",
+    "Phone": "",
     "Department": "Admin",
+    "Designation": "",
+    "ManagerId": null,
     "Salary": 1235,
+    "JoinDate": "0001-01-01T00:00:00",
     "Address": {
       "Street": "2m",
       "City": "nairobi",
       "State": "upperhill",
       "Zip": "00200"
-    }
+    },
+    "EmergencyContact": {
+      "Name": "",
+      "Relationship": "",
+      "Phone": "",
+      "Email": ""
+    },
+    "Documents": []
   },
   {
     "Id": 44,
     "FirstName": "john",
     "LastName": "nyambura",
+    "DateOfBirth": "0001-01-01T00:00:00",
     "Age": 20,
+    "Email": "",
+    "Phone": "",
     "Department": "HR",
+    "Designation": "",
+    "ManagerId": null,
     "Salary": 4566,
+    "JoinDate": "0001-01-01T00:00:00",
     "Address": {
       "Street": "5",
       "City": "nairobi",
       "State": "nairobi",
       "Zip": "00200"
-    }
+    },
+    "EmergencyContact": {
+      "Name": "",
+      "Relationship": "",
+      "Phone": "",
+      "Email": ""
+    },
+    "Documents": []
   }
 ]
