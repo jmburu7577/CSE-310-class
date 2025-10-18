@@ -1,0 +1,18 @@
+[
+  {
+    "Id": 1,
+    "AssetType": "Laptop",
+    "AssetTag": "12345",
+    "Brand": "hp",
+    "Model": "",
+    "SerialNumber": "cbdlll12456",
+    "PurchaseDate": "2025-10-02T00:00:00",
+    "PurchaseValue": 452,
+    "Status": 0,
+    "Condition": 0,
+    "Location": "IT Department",
+    "AssignedToEmployeeId": null,
+    "AssignmentDate": null,
+    "Notes": ""
+  }
+]

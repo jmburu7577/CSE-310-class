@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Management - Employee Management System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const API_BASE = '/api/asset';
+        const getToken = () => localStorage.getItem('token');
+        const getUser = () => JSON.parse(localStorage.getItem('user') || 'null');
+        const authFetch = async (url, options = {}) => {
+            const token = getToken();
+            return fetch(url, { ...options, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, ...options.headers }});
+        };
+
+        function AssetApp() {
+            const [currentUser, setCurrentUser] = useState(null);
+            const [activeTab, setActiveTab] = useState('assets');
+            const [assets, setAssets] = useState([]);
+            const [assignments, setAssignments] = useState([]);
+            const [inventory, setInventory] = useState(null);
+            const [stats, setStats] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [showAssetModal, setShowAssetModal] = useState(false);
+
+            useEffect(() => {
+                const user = getUser();
+                if (!user) { window.location.href = '/'; return; }
+                setCurrentUser(user);
+                fetchData();
+            }, []);
+
+            const fetchData = async () => {
+                try {
+                    const [assetsRes, assignmentsRes, inventoryRes, statsRes] = await Promise.all([
+                        authFetch(`${API_BASE}`),
+                        authFetch(`${API_BASE}/assignments`),
+                        authFetch(`${API_BASE}/inventory`),
+                        authFetch(`${API_BASE}/stats`)
+                    ]);
+                    if (assetsRes.ok) setAssets(await assetsRes.json());
+                    if (assignmentsRes.ok) setAssignments(await assignmentsRes.json());
+                    if (inventoryRes.ok) setInventory(await inventoryRes.json());
+                    if (statsRes.ok) setStats(await statsRes.json());
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setLoading(false);
+                }
+            };
+
+            const handleSaveAsset = async (assetData) => {
+                try {
+                    const response = await authFetch(`${API_BASE}`, { method: 'POST', body: JSON.stringify(assetData) });
+                    if (response.ok) { setShowAssetModal(false); fetchData(); }
+                } catch (error) { console.error('Error:', error); }
+            };
+
+            if (loading) return (<div className="min-h-screen flex items-center justify-center"><i className="fas fa-spinner fa-spin text-4xl text-purple-600"></i></div>);
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <header className="gradient-bg text-white shadow-lg">
+                        <div className="container mx-auto px-4 py-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <i className="fas fa-laptop text-3xl"></i>
+                                    <div><h1 className="text-3xl font-bold">Asset Management</h1><p className="text-sm opacity-90">Track company equipment and inventory</p></div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <a href="/" className="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100"><i className="fas fa-home mr-2"></i>Home</a>
+                                    <button onClick={() => {localStorage.clear(); window.location.href = '/';}} className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600"><i className="fas fa-sign-out-alt mr-2"></i>Logout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {stats && (
+                        <div className="bg-white border-b">
+                            <div className="container mx-auto px-4 py-6">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div className="bg-orange-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-orange-100 text-orange-600 p-3 rounded-lg"><i className="fas fa-box text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Total Assets</p><p className="text-2xl font-bold">{stats.overview?.totalAssets || 0}</p></div>
+                                    </div>
+                                    <div className="bg-green-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-green-100 text-green-600 p-3 rounded-lg"><i className="fas fa-check-circle text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Available</p><p className="text-2xl font-bold">{stats.overview?.availableAssets || 0}</p></div>
+                                    </div>
+                                    <div className="bg-blue-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-blue-100 text-blue-600 p-3 rounded-lg"><i className="fas fa-user-check text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Assigned</p><p className="text-2xl font-bold">{stats.overview?.assignedAssets || 0}</p></div>
+                                    </div>
+                                    <div className="bg-red-50 rounded-lg p-4 flex items-center space-x-4">
+                                        <div className="bg-red-100 text-red-600 p-3 rounded-lg"><i className="fas fa-exclamation-triangle text-2xl"></i></div>
+                                        <div><p className="text-sm text-gray-600">Maintenance</p><p className="text-2xl font-bold">{stats.overview?.underMaintenanceAssets || 0}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="container mx-auto px-4 py-6">
+                        <div className="flex space-x-2 mb-6 border-b">
+                            <button onClick={() => setActiveTab('assets')} className={`px-6 py-3 font-semibold ${activeTab === 'assets' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-box mr-2"></i>Assets ({assets.length})
+                            </button>
+                            <button onClick={() => setActiveTab('assignments')} className={`px-6 py-3 font-semibold ${activeTab === 'assignments' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-user-tag mr-2"></i>Assignments ({assignments.length})
+                            </button>
+                            <button onClick={() => setActiveTab('inventory')} className={`px-6 py-3 font-semibold ${activeTab === 'inventory' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-600'}`}>
+                                <i className="fas fa-warehouse mr-2"></i>Inventory
+                            </button>
+                        </div>
+
+                        {activeTab === 'assets' && (
+                            <div>
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-bold text-gray-800">Company Assets</h2>
+                                    <button onClick={() => setShowAssetModal(true)} className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                                        <i className="fas fa-plus mr-2"></i>Add Asset
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {assets.map(asset => (
+                                        <div key={asset.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div><h3 className="text-lg font-bold text-gray-800">{asset.brand} {asset.model}</h3><p className="text-xs text-gray-500">{asset.assetTag}</p></div>
+                                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${asset.status === 0 ? 'bg-green-100 text-green-600' : asset.status === 1 ? 'bg-blue-100 text-blue-600' : asset.status === 2 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'}`}>
+                                                    {['Available', 'Assigned', 'Maintenance', 'Retired'][asset.status]}
+                                                </span>
+                                            </div>
+                                            <div className="space-y-2 text-sm">
+                                                <p><i className="fas fa-tag w-5 text-gray-400"></i>{asset.assetType}</p>
+                                                <p><i className="fas fa-barcode w-5 text-gray-400"></i>{asset.serialNumber}</p>
+                                                <p><i className="fas fa-dollar-sign w-5 text-gray-400"></i>${asset.purchaseValue?.toLocaleString()}</p>
+                                                <p><i className="fas fa-calendar w-5 text-gray-400"></i>{new Date(asset.purchaseDate).toLocaleDateString()}</p>
+                                                <p><i className="fas fa-map-marker-alt w-5 text-gray-400"></i>{asset.location}</p>
+                                                <p><i className="fas fa-wrench w-5 text-gray-400"></i>{['New', 'Good', 'Fair', 'Poor'][asset.condition]}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'assignments' && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Asset Assignments</h2>
+                                <div className="bg-white rounded-lg shadow overflow-hidden">
+                                    <table className="min-w-full">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Asset</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Condition</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {assignments.map(assignment => (
+                                                <tr key={assignment.id} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap font-medium">Asset #{assignment.assetId}</td>
+                                                    <td className="px-6 py-4">{assignment.employeeName} (#{assignment.employeeId})</td>
+                                                    <td className="px-6 py-4">{new Date(assignment.assignedDate).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-4"><span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-600">{['New', 'Good', 'Fair', 'Poor'][assignment.conditionOnAssignment]}</span></td>
+                                                    <td className="px-6 py-4">{assignment.assignedBy}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'inventory' && inventory && (
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Inventory Overview</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {Object.entries(inventory.assetsByType || {}).map(([type, count]) => (
+                                        <div key={type} className="bg-white rounded-lg shadow-md p-6">
+                                            <div className="flex items-center space-x-4">
+                                                <div className="bg-purple-100 text-purple-600 p-4 rounded-lg"><i className="fas fa-box text-2xl"></i></div>
+                                                <div><p className="text-sm text-gray-600">{type}</p><p className="text-3xl font-bold text-gray-800">{count}</p></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-6 bg-white rounded-lg shadow-md p-6">
+                                    <h3 className="text-xl font-bold mb-4">Summary</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div><p className="text-sm text-gray-600">Total Assets</p><p className="text-2xl font-bold">{inventory.totalAssets}</p></div>
+                                        <div><p className="text-sm text-gray-600">Available</p><p className="text-2xl font-bold text-green-600">{inventory.availableAssets}</p></div>
+                                        <div><p className="text-sm text-gray-600">Assigned</p><p className="text-2xl font-bold text-blue-600">{inventory.assignedAssets}</p></div>
+                                        <div><p className="text-sm text-gray-600">Total Value</p><p className="text-2xl font-bold text-purple-600">${inventory.totalValue?.toLocaleString()}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {showAssetModal && <AssetModal onClose={() => setShowAssetModal(false)} onSave={handleSaveAsset} />}
+                </div>
+            );
+        }
+
+        function AssetModal({ onClose, onSave }) {
+            const [formData, setFormData] = useState({ assetType: 'Laptop', assetTag: '', brand: '', model: '', serialNumber: '', purchaseDate: '', purchaseValue: '', status: 0, condition: 0, location: 'IT Department', notes: '' });
+            const handleChange = (e) => { const { name, value } = e.target; setFormData({ ...formData, [name]: ['purchaseValue', 'status', 'condition'].includes(name) ? parseInt(value) : value }); };
+            const handleSubmit = (e) => { e.preventDefault(); onSave(formData); };
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b flex justify-between items-center">
+                            <h2 className="text-2xl font-bold">Add New Asset</h2>
+                            <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><i className="fas fa-times text-2xl"></i></button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label><select name="assetType" value={formData.assetType} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"><option>Laptop</option><option>Desktop</option><option>Phone</option><option>Tablet</option><option>Monitor</option><option>Keyboard</option><option>Mouse</option></select></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Asset Tag *</label><input type="text" name="assetTag" value={formData.assetTag} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" required /></div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Brand</label><input type="text" name="brand" value={formData.brand} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Model</label><input type="text" name="model" value={formData.model} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            </div>
+                            <div><label className="block text-sm font-medium text-gray-700 mb-2">Serial Number</label><input type="text" name="serialNumber" value={formData.serialNumber} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Purchase Date</label><input type="date" name="purchaseDate" value={formData.purchaseDate} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Purchase Value ($)</label><input type="number" name="purchaseValue" value={formData.purchaseValue} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Condition</label><select name="condition" value={formData.condition} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"><option value="0">New</option><option value="1">Good</option><option value="2">Fair</option><option value="3">Poor</option></select></div>
+                                <div><label className="block text-sm font-medium text-gray-700 mb-2">Location</label><input type="text" name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500" /></div>
+                            </div>
+                            <div className="flex space-x-4 pt-4">
+                                <button type="submit" className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700"><i className="fas fa-save mr-2"></i>Add Asset</button>
+                                <button type="button" onClick={onClose} className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AssetApp />);
+    </script>
+</body>
+</html>
